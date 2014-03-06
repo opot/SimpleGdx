@@ -1,9 +1,11 @@
 package com.youtolife.simple;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,13 +19,16 @@ public class GamePlayState extends GameState {
 	private Sprite sprite;
 	private Player player;
 	private Vector<Enemy> enemies = new Vector<Enemy>();
+	private Vector<Bonus> bonuses = new Vector<Bonus>();
+	public Vector<Bullet> bullets = new Vector<Bullet>();
 	private EnemyFactory fact;
 	private BitmapFont font;
-	
-	float h,w;
+
+	float h, w;
+	float bonus_time = 10;
 	
 	float Score = 0;
-	
+
 	public GamePlayState(int StateId) {
 		super(StateId);
 	}
@@ -36,32 +41,82 @@ public class GamePlayState extends GameState {
 			for (Enemy enemy : enemies)
 				enemy.render(batch);
 		}
-		font.draw(batch, String.valueOf(Score), 0, 0);
+		for (Bullet b : bullets)
+			b.render(batch);
+		for (Bonus b : bonuses)
+			b.render(batch);
+		font.draw(batch, String.valueOf(Score), -0.4f, 0);
 	}
 
 	@Override
 	public void update(MySimpleGame game) {
-		player.update(h, w);
+		
+		Input input = Gdx.input;
+		if(input.isKeyPressed(Input.Keys.ESCAPE)||input.isKeyPressed(Input.Keys.BACK))
+			game.enterState(MySimpleGame.MAINMENUSTATE);
+		
+		bonus_time-=Gdx.graphics.getDeltaTime();
+		if(bonus_time<0){
+			bonus_time+=new Random().nextInt(20);
+			bonuses.add(new Bonus());
+		}
+		Iterator<Bonus> bonIt = bonuses.iterator();
+		while(bonIt.hasNext()){
+			Bonus b = bonIt.next();
+			if(b.update(player, h, w)){
+				player.bullet_cout++;
+				bonIt.remove();
+			}
+		}
+		
+		player.update(this, h, w);
+		Iterator<Enemy> enemIt = enemies.iterator();
 		synchronized (enemies) {
-			Iterator<Enemy> i = enemies.iterator();
-			while (i.hasNext()) {
-				Enemy enemy = i.next();
-				if (enemy.update(player)){
+			while (enemIt.hasNext()) {
+				Enemy enemy = enemIt.next();
+				if (enemy.update(player)) {
 					fact.Kill();
 					game.enterState(MySimpleGame.MAINMENUSTATE);
 				}
 				if (enemy.sprite.getY() < -h / w)
-					i.remove();
+					enemIt.remove();
 			}
 		}
-		Score+=Gdx.graphics.getDeltaTime();
+		Iterator<Bullet> bulIt = bullets.iterator();
+		while (bulIt.hasNext()) {
+			Bullet b = bulIt.next();
+			b.update(h, w);
+			if (b.sprite.getY() > h / w * 2)
+				bulIt.remove();
+			else {
+				synchronized (enemies) {
+					enemIt = enemies.iterator();
+					while (enemIt.hasNext()) {
+						Enemy enemy = enemIt.next();
+						if (enemy.sprite.getBoundingRectangle().overlaps(
+								b.sprite.getBoundingRectangle())) {
+							enemIt.remove();
+							bulIt.remove();
+							if (bulIt.hasNext()) {
+								b = bulIt.next();
+								b.update(h, w);
+							} else {
+								return;
+							}
+						}
+					}
+				}
+			}
+
+		}
+		Score += Gdx.graphics.getDeltaTime();
 	}
 
 	@Override
 	public void init() {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-		
+
 		font = new BitmapFont();
 		font.setUseIntegerPositions(true);
 		texture = new Texture(Gdx.files.internal("data/back.png"));
@@ -78,7 +133,7 @@ public class GamePlayState extends GameState {
 
 	@Override
 	public void dispose() {
-		if(fact != null)
+		if (fact != null)
 			fact.Kill();
 		enem.dispose();
 		texture.dispose();
@@ -89,9 +144,23 @@ public class GamePlayState extends GameState {
 	@Override
 	public void enter() {
 		enemies = new Vector<Enemy>();
+		bonuses = new Vector<Bonus>();
+		fact = new EnemyFactory(enemies, enem);
+		player.bullet_cout = 3;
+		bullets = new Vector<Bullet>();
+		new Thread(fact).start();
+
+	}
+
+	@Override
+	public void pause() {
+		fact.Kill();
+	}
+
+	@Override
+	public void resume() {
 		fact = new EnemyFactory(enemies, enem);
 		new Thread(fact).start();
-		
 	}
 
 }

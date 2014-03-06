@@ -6,42 +6,42 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Enemy {
+public class Bonus {
+
 	Sprite sprite;
-	float speedY,speedX;
+	Texture texture;
 	
-	public Enemy(Texture texture,float x,float y) {
-		TextureRegion region = new TextureRegion(texture,0,0,128,128);
-		sprite = new Sprite(region);
-		sprite.setPosition(x,y);
-		sprite.flip(false, true);
-		sprite.setSize(0.1f, 0.12f);
-		sprite.setOrigin(0.05f, 0.06f);
+	float speedX,speedY;
+	
+	public Bonus() {
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+
+		
+		texture = new Texture(Gdx.files.internal("data/bonus.png"));
+		sprite = new Sprite(texture);
+		sprite.setSize(0.05f, 0.05f);
+		sprite.setPosition(new Random().nextFloat()*0.96f-0.5f, h/w+0.05f);
 		
 		speedY = new Random().nextFloat()+0.2f;
 		speedX = new Random().nextFloat();
-		
-		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}
 
-	public boolean update(Player player){
+	public boolean update(Player player ,float h, float w){
 		sprite.setY(sprite.getY()-speedY*Gdx.graphics.getDeltaTime());
 		sprite.setX(sprite.getX()-speedX*Gdx.graphics.getDeltaTime());
 		if (sprite.getX() < -0.5f){
 			speedX*=-1;
-			sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 			sprite.setX(-0.499f);
 		}
 		if (sprite.getX() > 0.40f){
 			speedX*=-1;
 			sprite.setX(0.399f);
-			sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 		}
 		
 		if(player.sprite.getBoundingRectangle().overlaps(sprite.getBoundingRectangle()))
-				return true;
+			return true;
 		return false;
 	}
 	
@@ -49,4 +49,7 @@ public class Enemy {
 		sprite.draw(batch);
 	}
 	
+	public void dispose(){
+		texture.dispose();
+	}
 }

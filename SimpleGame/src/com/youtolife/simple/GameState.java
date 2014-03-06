@@ -18,4 +18,6 @@ public abstract class GameState {
 	public abstract void init();
 	public abstract void dispose();
 	public abstract void enter();
+	public abstract void pause();
+	public abstract void resume();
 }

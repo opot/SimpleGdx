@@ -22,12 +22,12 @@ public class EnemyFactory implements Runnable {
 	public void run() {
 		while(isAlive){
 			try {
-				Thread.sleep(random.nextInt(2000));
+				Thread.sleep(random.nextInt(300));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			synchronized(enemies){
-				float x = random.nextFloat()*2-1;
+				float x = random.nextFloat()*0.96f-0.5f;
 				float y = Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth();
 				enemies.add(new Enemy(sprite,x,y));
 			}
