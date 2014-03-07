@@ -1,7 +1,10 @@
 package com.youtolife.simple;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +16,18 @@ public class Player {
 	Texture texture;
 	float ShotTime = 0.1f;
 	int bullet_cout = 1;
+	int damage = 20;
+	Color color = new Color(1,1,1,1);
+	
+	public void upgrade() {
+		Random r = new Random();
+		int b = r.nextInt(2);
+		if (b == 0)
+			bullet_cout++;
+		else
+			damage+=r.nextInt(20);
+		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
+	}
 
 	public Player(float AspektRatio) {
 		texture = new Texture(Gdx.files.internal("data/player.png"));
@@ -50,9 +65,9 @@ public class Player {
 			else {
 				float minAngle = -bullet_cout * 2.5f;
 				for (int i = 0; i < bullet_cout; i++)
-					game.bullets.add(new Bullet(minAngle + i * 5, sprite
-							.getX() + sprite.getWidth() / 2 - 0.01f, sprite
-							.getY() + sprite.getHeight()));
+					game.bullets.add(new Bullet(minAngle + i * 5, sprite.getX()
+							+ sprite.getWidth() / 2 - 0.01f, sprite.getY()
+							+ sprite.getHeight()));
 			}
 		}
 	}

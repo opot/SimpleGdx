@@ -24,7 +24,8 @@ public class EnemyFactory implements Runnable {
 	public void run() {
 		while(isAlive){
 			try {
-				Thread.sleep(random.nextInt((int) (1000-game.Score)));
+				Thread.sleep(random.nextInt((int) (2000-game.Score)));
+				System.out.println(game.Score);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

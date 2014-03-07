@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -41,8 +42,10 @@ public class GamePlayState extends GameState {
 			for (Enemy enemy : enemies)
 				enemy.render(batch);
 		}
-		for (Bullet b : bullets)
+		for (Bullet b : bullets){
+			b.sprite.setColor(player.color);
 			b.render(batch);
+		}
 		for (Bonus b : bonuses)
 			b.render(batch);
 		font.draw(batch, String.valueOf(Score), -0.4f, 0);
@@ -64,7 +67,7 @@ public class GamePlayState extends GameState {
 		while(bonIt.hasNext()){
 			Bonus b = bonIt.next();
 			if(b.update(player, h, w)){
-				player.bullet_cout++;
+				player.upgrade();
 				bonIt.remove();
 			}
 		}
@@ -95,7 +98,7 @@ public class GamePlayState extends GameState {
 						Enemy enemy = enemIt.next();
 						if (enemy.sprite.getBoundingRectangle().overlaps(
 								b.sprite.getBoundingRectangle())) {
-							enemy.hp-=b.damage;
+							enemy.hp-=player.damage;
 							bulIt.remove();
 							if (bulIt.hasNext()) {
 								b = bulIt.next();
@@ -149,6 +152,7 @@ public class GamePlayState extends GameState {
 		player.bullet_cout = 1;
 		bullets = new Vector<Bullet>();
 		Score = 0;
+		player.color = new Color(1,1,1,1);
 		new Thread(fact).start();
 
 	}
