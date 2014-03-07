@@ -12,6 +12,8 @@ public class Enemy {
 	Sprite sprite;
 	float speedY,speedX;
 	
+	int hp = 100;
+	
 	public Enemy(Texture texture,float x,float y) {
 		TextureRegion region = new TextureRegion(texture,0,0,128,128);
 		sprite = new Sprite(region);

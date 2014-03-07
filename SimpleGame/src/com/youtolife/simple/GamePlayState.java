@@ -78,7 +78,7 @@ public class GamePlayState extends GameState {
 					fact.Kill();
 					game.enterState(MySimpleGame.MAINMENUSTATE);
 				}
-				if (enemy.sprite.getY() < -h / w)
+				if (enemy.sprite.getY() < -h / w||enemy.hp<=0)
 					enemIt.remove();
 			}
 		}
@@ -95,7 +95,7 @@ public class GamePlayState extends GameState {
 						Enemy enemy = enemIt.next();
 						if (enemy.sprite.getBoundingRectangle().overlaps(
 								b.sprite.getBoundingRectangle())) {
-							enemIt.remove();
+							enemy.hp-=b.damage;
 							bulIt.remove();
 							if (bulIt.hasNext()) {
 								b = bulIt.next();
@@ -145,9 +145,10 @@ public class GamePlayState extends GameState {
 	public void enter() {
 		enemies = new Vector<Enemy>();
 		bonuses = new Vector<Bonus>();
-		fact = new EnemyFactory(enemies, enem);
-		player.bullet_cout = 3;
+		fact = new EnemyFactory(this, enemies, enem);
+		player.bullet_cout = 1;
 		bullets = new Vector<Bullet>();
+		Score = 0;
 		new Thread(fact).start();
 
 	}
@@ -159,7 +160,7 @@ public class GamePlayState extends GameState {
 
 	@Override
 	public void resume() {
-		fact = new EnemyFactory(enemies, enem);
+		fact = new EnemyFactory(this, enemies, enem);
 		new Thread(fact).start();
 	}
 

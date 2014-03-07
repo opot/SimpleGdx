@@ -12,17 +12,19 @@ public class EnemyFactory implements Runnable {
 	Vector<Enemy> enemies;
 	Random random = new Random();
 	Texture sprite;
+	GamePlayState game;
 
-	public EnemyFactory(Vector<Enemy> enemies, Texture sprite) {
+	public EnemyFactory(GamePlayState game, Vector<Enemy> enemies, Texture sprite) {
 		this.sprite = sprite;
 		this.enemies = enemies;
+		this.game = game;
 	}
 
 	@Override
 	public void run() {
 		while(isAlive){
 			try {
-				Thread.sleep(random.nextInt(300));
+				Thread.sleep(random.nextInt((int) (1000-game.Score)));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
