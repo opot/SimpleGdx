@@ -68,6 +68,7 @@ public class GamePlayState extends GameState {
 			Bonus b = bonIt.next();
 			if(b.update(player, h, w)){
 				player.upgrade();
+				b.dispose();
 				bonIt.remove();
 			}
 		}
@@ -81,16 +82,19 @@ public class GamePlayState extends GameState {
 					fact.Kill();
 					game.enterState(MySimpleGame.MAINMENUSTATE);
 				}
-				if (enemy.sprite.getY() < -h / w||enemy.hp<=0)
+				if (enemy.sprite.getY() < -h / w||enemy.hp<=0){
 					enemIt.remove();
+				}
 			}
 		}
 		Iterator<Bullet> bulIt = bullets.iterator();
 		while (bulIt.hasNext()) {
 			Bullet b = bulIt.next();
 			b.update(h, w);
-			if (b.sprite.getY() > h / w * 2)
+			if (b.sprite.getY() > h / w + b.sprite.getHeight()){
+				b.dispose();
 				bulIt.remove();
+			}
 			else {
 				synchronized (enemies) {
 					enemIt = enemies.iterator();
@@ -99,6 +103,7 @@ public class GamePlayState extends GameState {
 						if (enemy.sprite.getBoundingRectangle().overlaps(
 								b.sprite.getBoundingRectangle())) {
 							enemy.hp-=player.damage;
+							b.dispose();
 							bulIt.remove();
 							if (bulIt.hasNext()) {
 								b = bulIt.next();
