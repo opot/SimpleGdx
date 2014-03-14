@@ -12,15 +12,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Player {
 
+	Random r = new Random();
+	
 	Sprite sprite;
 	Texture texture;
-	float ShotTime = 0.1f;
+	float PrefferedTime = 0.3f;
+	float ShotTime = PrefferedTime;
 	int bullet_cout = 1;
 	int damage = 20;
 	Color color = new Color(1,1,1,1);
 	
 	public void upgrade() {
-		Random r = new Random();
 		int b = r.nextInt(2);
 		if (b == 0)
 			bullet_cout++;
@@ -35,6 +37,8 @@ public class Player {
 		sprite = new Sprite(region);
 		sprite.setSize(0.1f, 0.2f);
 		sprite.setPosition(0, -AspektRatio / 2);
+		
+		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
 	}
 
 	public void dispose() {
@@ -57,17 +61,20 @@ public class Player {
 
 		ShotTime -= Gdx.graphics.getDeltaTime();
 		if (ShotTime <= 0) {
-			ShotTime += 0.2f;
-			if (bullet_cout == 1)
+			ShotTime += PrefferedTime;
+			if (bullet_cout == 1){
 				game.bullets.add(new Bullet(0, sprite.getX()
 						+ sprite.getWidth() / 2 - 0.01f, sprite.getY()
 						+ sprite.getHeight()));
-			else {
+				game.bullets.get(game.bullets.size()-1).sprite.setColor(color);
+			}else {
 				float minAngle = -bullet_cout * 2.5f;
-				for (int i = 0; i < bullet_cout; i++)
+				for (int i = 0; i < bullet_cout; i++){
 					game.bullets.add(new Bullet(minAngle + i * 5, sprite.getX()
 							+ sprite.getWidth() / 2 - 0.01f, sprite.getY()
 							+ sprite.getHeight()));
+					game.bullets.get(game.bullets.size()-1).sprite.setColor(color);
+				}
 			}
 		}
 	}

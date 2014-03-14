@@ -14,7 +14,17 @@ public class Enemy {
 	
 	int hp = 100;
 	
-	public Enemy(Texture texture,float x,float y) {
+	public Enemy(Texture texture,float x,float y,float speedX, float speedY) {
+		Creator(texture,x,y);
+		this.speedX = speedX;
+		this.speedY = speedY;
+	}
+	
+	public Enemy(Texture texture,float x,float y){
+		Creator(texture,x,y);
+	}
+	
+	private void Creator(Texture texture,float x,float y) {
 		TextureRegion region = new TextureRegion(texture,0,0,128,128);
 		sprite = new Sprite(region);
 		sprite.setPosition(x,y);
@@ -22,8 +32,8 @@ public class Enemy {
 		sprite.setSize(0.1f, 0.12f);
 		sprite.setOrigin(0.05f, 0.06f);
 		
-		speedY = new Random().nextFloat()+0.2f;
-		speedX = new Random().nextFloat();
+		speedY = new Random().nextFloat()/2+0.2f;
+		speedX = new Random().nextFloat()/2;
 		
 		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}

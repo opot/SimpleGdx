@@ -14,7 +14,7 @@ public class Bonus {
 	
 	float speedX,speedY;
 	
-	public Bonus() {
+	public Bonus(float x, float y) {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -22,7 +22,7 @@ public class Bonus {
 		texture = new Texture(Gdx.files.internal("data/bonus.png"));
 		sprite = new Sprite(texture);
 		sprite.setSize(0.05f, 0.05f);
-		sprite.setPosition(new Random().nextFloat()*0.96f-0.5f, h/w+0.05f);
+		sprite.setPosition(x,y);
 		
 		speedY = new Random().nextFloat()+0.2f;
 		speedX = new Random().nextFloat();
