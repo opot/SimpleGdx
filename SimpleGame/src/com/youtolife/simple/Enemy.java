@@ -12,12 +12,23 @@ public class Enemy {
 	Sprite sprite;
 	float speedY,speedX;
 	
+	public static float ratio = 0.12f/0.1f;
+	
 	int hp = 100;
 	
 	public Enemy(Texture texture,float x,float y,float speedX, float speedY) {
 		Creator(texture,x,y);
 		this.speedX = speedX;
 		this.speedY = speedY;
+		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
+	}
+	
+	public Enemy(Texture texture,float x,float y,float width, float height,float speedX, float speedY) {
+		Creator(texture,x,y);
+		sprite.setSize(width, height);
+		this.speedX = speedX;
+		this.speedY = speedY;
+		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}
 	
 	public Enemy(Texture texture,float x,float y){

@@ -22,14 +22,14 @@ public class GamePlayState extends GameState {
 	private Vector<Bonus> bonuses = new Vector<Bonus>();
 	private Vector<Bang> bangs = new Vector<Bang>();
 	public Vector<Bullet> bullets = new Vector<Bullet>();
-	private EnemyFactory fact;
+	private EnemySpawner spawner;
 	private BitmapFont font;
 
 	float h, w;
-	
+
 	float Score = 0;
 	Random r = new Random();
-	
+
 	public GamePlayState(int StateId) {
 		super(StateId);
 	}
@@ -46,43 +46,46 @@ public class GamePlayState extends GameState {
 			b.render(batch);
 		for (Bonus b : bonuses)
 			b.render(batch);
-		for(Bang b:bangs)
+		for (Bang b : bangs)
 			b.render(batch);
 		font.draw(batch, String.valueOf(Score), -0.4f, 0);
 	}
 
 	@Override
 	public void update(MySimpleGame game) {
-		
+
+		spawner.update(w, h);
+
 		Input input = Gdx.input;
-		if(input.isKeyPressed(Input.Keys.ESCAPE)||input.isKeyPressed(Input.Keys.BACK))
+		if (input.isKeyPressed(Input.Keys.ESCAPE)
+				|| input.isKeyPressed(Input.Keys.BACK))
 			game.enterState(MySimpleGame.MAINMENUSTATE);
-		
+
 		Iterator<Bonus> bonIt = bonuses.iterator();
-		while(bonIt.hasNext()){
+		while (bonIt.hasNext()) {
 			Bonus b = bonIt.next();
-			if(b.update(player, h, w)){
+			if (b.update(player, h, w)) {
 				player.upgrade();
 				b.dispose();
 				bonIt.remove();
 			}
 		}
-		
+
 		player.update(this, h, w);
 		Iterator<Enemy> enemIt = enemies.iterator();
 		synchronized (enemies) {
 			while (enemIt.hasNext()) {
 				Enemy enemy = enemIt.next();
-				if (enemy.update(player)) {
-					fact.Kill();
+				if (enemy.update(player)) 
 					game.enterState(MySimpleGame.MAINMENUSTATE);
-				}
-				if (enemy.sprite.getY() < -h / w||enemy.hp<=0){
-					if(enemy.hp<=0)
+				if (enemy.sprite.getY() < -h / w || enemy.hp <= 0) {
+					if (enemy.hp <= 0) {
 						Score++;
-					int b_chance = r.nextInt(100);
-					if(b_chance>=90)
-						bonuses.add(new Bonus(enemy.sprite.getX(),enemy.sprite.getY()-0.06f));
+						int b_chance = r.nextInt(100);
+						if (b_chance >= 90)
+							bonuses.add(new Bonus(enemy.sprite.getX(),
+									enemy.sprite.getY() - 0.06f));
+					}
 					enemIt.remove();
 				}
 			}
@@ -91,19 +94,18 @@ public class GamePlayState extends GameState {
 		while (bulIt.hasNext()) {
 			Bullet b = bulIt.next();
 			b.update(h, w);
-			if (b.sprite.getY() > h / w + b.sprite.getHeight()){
+			if (b.sprite.getY() > h / w + b.sprite.getHeight()) {
 				b.dispose();
 				bulIt.remove();
-			}
-			else {
+			} else {
 				synchronized (enemies) {
 					enemIt = enemies.iterator();
 					while (enemIt.hasNext()) {
 						Enemy enemy = enemIt.next();
 						if (enemy.sprite.getBoundingRectangle().overlaps(
 								b.sprite.getBoundingRectangle())) {
-							enemy.hp-=player.damage;
-							bangs.add(new Bang(b.sprite.getX(),b.sprite.getY()));
+							enemy.hp -= player.damage;
+							bangs.add(new Bang(b.sprite.getX(), b.sprite.getY()));
 							b.dispose();
 							bulIt.remove();
 							if (bulIt.hasNext()) {
@@ -119,9 +121,9 @@ public class GamePlayState extends GameState {
 
 		}
 		Iterator<Bang> bangIt = bangs.iterator();
-		while(bangIt.hasNext()){
+		while (bangIt.hasNext()) {
 			Bang b = bangIt.next();
-			if(b.update(w, h))
+			if (b.update(w, h))
 				bangIt.remove();
 		}
 	}
@@ -147,8 +149,6 @@ public class GamePlayState extends GameState {
 
 	@Override
 	public void dispose() {
-		if (fact != null)
-			fact.Kill();
 		enem.dispose();
 		texture.dispose();
 		player.dispose();
@@ -160,23 +160,19 @@ public class GamePlayState extends GameState {
 		enemies = new Vector<Enemy>();
 		bangs = new Vector<Bang>();
 		bonuses = new Vector<Bonus>();
-		fact = new EnemyFactory(this, enemies, enem);
+		spawner = new EnemySpawner(enemies, enem);
 		player.bullet_cout = 1;
 		bullets = new Vector<Bullet>();
 		Score = 0;
-		new Thread(fact).start();
 
 	}
 
 	@Override
 	public void pause() {
-		fact.Kill();
 	}
 
 	@Override
 	public void resume() {
-		fact = new EnemyFactory(this, enemies, enem);
-		new Thread(fact).start();
 	}
 
 }
