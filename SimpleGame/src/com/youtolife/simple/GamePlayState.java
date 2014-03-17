@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -94,7 +95,7 @@ public class GamePlayState extends GameState {
 		while (bulIt.hasNext()) {
 			Bullet b = bulIt.next();
 			b.update(h, w);
-			if (b.sprite.getY() > h / w + b.sprite.getHeight()) {
+			if (b.sprite.getY() > h / w) {
 				b.dispose();
 				bulIt.remove();
 			} else {
@@ -162,6 +163,9 @@ public class GamePlayState extends GameState {
 		bonuses = new Vector<Bonus>();
 		spawner = new EnemySpawner(enemies, enem);
 		player.bullet_cout = 1;
+		player.damage = 25;
+		player.sprite.setX(0);
+		player.color = new Color(1,0,0,1);
 		bullets = new Vector<Bullet>();
 		Score = 0;
 

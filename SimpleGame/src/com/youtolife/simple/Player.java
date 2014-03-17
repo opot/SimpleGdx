@@ -19,7 +19,7 @@ public class Player {
 	float PrefferedTime = 0.3f;
 	float ShotTime = PrefferedTime;
 	int bullet_cout = 1;
-	int damage = 20;
+	int damage = 25;
 	Color color = new Color(1,1,1,1);
 	
 	public void upgrade() {
@@ -27,7 +27,7 @@ public class Player {
 		if (b == 0)
 			bullet_cout++;
 		else
-			damage+=r.nextInt(20);
+			damage+=25;
 		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
 	}
 
