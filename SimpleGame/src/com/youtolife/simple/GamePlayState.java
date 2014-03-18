@@ -24,7 +24,7 @@ public class GamePlayState extends GameState {
 	private Vector<Bang> bangs = new Vector<Bang>();
 	public Vector<Bullet> bullets = new Vector<Bullet>();
 	private EnemySpawner spawner;
-	private BitmapFont font;
+	private BitmapNumeric font;
 
 	float h, w;
 
@@ -49,7 +49,7 @@ public class GamePlayState extends GameState {
 			b.render(batch);
 		for (Bang b : bangs)
 			b.render(batch);
-		font.draw(batch, String.valueOf(Score), -0.4f, 0);
+		font.drawString(batch, String.valueOf((int)Score), -0.5f,h/w/2f-font.getSize());
 	}
 
 	@Override
@@ -134,8 +134,7 @@ public class GamePlayState extends GameState {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
-		font = new BitmapFont();
-		font.setUseIntegerPositions(true);
+		font = new BitmapNumeric(0.1f,new Color(1,0,0,1));
 		texture = new Texture(Gdx.files.internal("data/back.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
