@@ -12,10 +12,10 @@ public class Bullet {
 	float speedX = 0f;
 	float speedY = 2f;
 	
-	public Bullet(float angle ,float x, float y){
+	public Bullet(float angle ,float x, float y,float width, float height){
 		texture = new Texture(Gdx.files.internal("data/bullet.png"));
 		sprite = new Sprite(texture);
-		sprite.setSize(0.02f, 0.03f);
+		sprite.setSize(width, height);
 		sprite.setPosition(x, y);
 		
 		speedX = (float) (2f*Math.sin(Math.toRadians(angle)));

@@ -13,22 +13,40 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Player {
 
 	Random r = new Random();
-	
+
 	Sprite sprite;
 	Texture texture;
+	float ShotTime = 1f;
+	Color color = new Color(1, 1, 1, 1);
+
+	int level_points = 1;
 	float PrefferedTime = 0.3f;
-	float ShotTime = PrefferedTime;
 	int bullet_cout = 1;
 	int damage = 25;
-	Color color = new Color(1,1,1,1);
-	
+	float height = 0.04f;
+	float width = 0.02f;
+
 	public void upgrade() {
-		int b = r.nextInt(2);
-		if (b == 0)
-			bullet_cout++;
-		else
-			damage+=25;
-		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
+		level_points++;
+		int perks = level_points;
+		while (perks != 0) {
+			damage = 25;
+			bullet_cout = 1;
+			PrefferedTime = 0.5f;
+			int k = r.nextInt(3);
+			if (k == 0)
+				damage += 25;
+			if (k == 1)
+				bullet_cout++;
+			if (k == 2)
+				PrefferedTime -= 0.1f;
+			if (PrefferedTime == 0.2f)
+				PrefferedTime = 0.3f;
+			perks--;
+		}
+		height = damage / 25 * 0.04f;
+		width = damage / 25 * 0.02f;
+		color = new Color(r.nextFloat(),r.nextFloat(), r.nextFloat(), 1f);
 	}
 
 	public Player(float AspektRatio) {
@@ -37,7 +55,7 @@ public class Player {
 		sprite = new Sprite(region);
 		sprite.setSize(0.1f, 0.2f);
 		sprite.setPosition(0, -AspektRatio / 2);
-		
+
 		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
 	}
 
@@ -62,18 +80,20 @@ public class Player {
 		ShotTime -= Gdx.graphics.getDeltaTime();
 		if (ShotTime <= 0) {
 			ShotTime += PrefferedTime;
-			if (bullet_cout == 1){
+			if (bullet_cout == 1) {
 				game.bullets.add(new Bullet(0, sprite.getX()
 						+ sprite.getWidth() / 2 - 0.01f, sprite.getY()
-						+ sprite.getHeight()));
-				game.bullets.get(game.bullets.size()-1).sprite.setColor(color);
-			}else {
+						+ sprite.getHeight(), width, height));
+				game.bullets.get(game.bullets.size() - 1).sprite
+						.setColor(color);
+			} else {
 				float minAngle = -bullet_cout * 2.5f;
-				for (int i = 0; i < bullet_cout; i++){
+				for (int i = 0; i < bullet_cout; i++) {
 					game.bullets.add(new Bullet(minAngle + i * 5, sprite.getX()
 							+ sprite.getWidth() / 2 - 0.01f, sprite.getY()
-							+ sprite.getHeight()));
-					game.bullets.get(game.bullets.size()-1).sprite.setColor(color);
+							+ sprite.getHeight(), width, height));
+					game.bullets.get(game.bullets.size() - 1).sprite
+							.setColor(color);
 				}
 			}
 		}
