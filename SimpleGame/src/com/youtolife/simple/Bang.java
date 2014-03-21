@@ -2,6 +2,7 @@ package com.youtolife.simple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,23 +16,43 @@ public class Bang {
 	private int CUR_COLS = 0;
 	private int CUR_ROWS = 0;
 
-	TextureRegion[][] sprites;
+	Sprite[][] sprites;
 	TextureRegion texture;
 
-	float x, y;
 	float swapTime = 0.04f;
 	float curTime = 0.04f;
 
-	public Bang(float x, float y) {
+	public Bang(float x, float y, float width, float height,float swapTime){
 		texture = new TextureRegion(new Texture(
 				Gdx.files.internal("data/burst.png")),128,96);
-		sprites = texture.split(WIDTH, HEIGHT);
-		this.x = x;
-		this.y = y;
+		TextureRegion[][] chars;
+		this.swapTime = swapTime;
+		chars = texture.split(WIDTH, HEIGHT);
+		sprites = new Sprite[chars.length][chars[0].length];
+		for(int i = 0;i<chars.length;i++)
+			for(int j = 0;j<chars[0].length;j++){
+				sprites[i][j] = new Sprite(chars[i][j]);
+				sprites[i][j].setSize(width, height);
+				sprites[i][j].setPosition(x, y);
+			}
+	}
+	
+	public Bang(float x, float y){
+		texture = new TextureRegion(new Texture(
+				Gdx.files.internal("data/burst.png")),128,96);
+		TextureRegion[][] chars;
+		chars = texture.split(WIDTH, HEIGHT);
+		sprites = new Sprite[chars.length][chars[0].length];
+		for(int i = 0;i<chars.length;i++)
+			for(int j = 0;j<chars[0].length;j++){
+				sprites[i][j] = new Sprite(chars[i][j]);
+				sprites[i][j].setSize(0.06f, 0.06f);
+				sprites[i][j].setPosition(x, y);
+			}
 	}
 
 	public void render(SpriteBatch batch) {
-		batch.draw(sprites[CUR_COLS][CUR_ROWS], x, y, 0.06f, 0.06f);
+		sprites[CUR_COLS][CUR_ROWS].draw(batch);
 	}
 
 	public boolean update(float w, float h) {

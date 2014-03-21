@@ -58,10 +58,12 @@ public class GamePlayState extends GameState {
 				|| input.isKeyPressed(Input.Keys.BACK))
 			game.enterState(MySimpleGame.MAINMENUSTATE);
 
-		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched())
-			for(Enemy enemy:enemies)
-				enemy.sprite.setY(enemy.sprite.getY()-Gdx.graphics.getDeltaTime());
-
+		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched()) {
+			for (Enemy enemy : enemies)
+				enemy.sprite.setY(enemy.sprite.getY()
+						- Gdx.graphics.getDeltaTime());
+			back.sprite.setY(back.sprite.getY() - Gdx.graphics.getDeltaTime());
+		}
 
 		Iterator<Bonus> bonIt = bonuses.iterator();
 		while (bonIt.hasNext()) {
@@ -82,6 +84,9 @@ public class GamePlayState extends GameState {
 			if (enemy.sprite.getY() < -h / w || enemy.hp <= 0) {
 				if (enemy.hp <= 0) {
 					Score++;
+					bangs.add(new Bang(enemy.sprite.getX(),
+							enemy.sprite.getY(), enemy.sprite.getWidth(),
+							enemy.sprite.getHeight(), 0.05f));
 					int b_chance = r.nextInt(100);
 					if (b_chance >= 90)
 						bonuses.add(new Bonus(enemy.sprite.getX(), enemy.sprite

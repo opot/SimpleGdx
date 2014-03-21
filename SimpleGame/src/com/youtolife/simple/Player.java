@@ -32,14 +32,17 @@ public class Player {
 		while (perks != 0) {
 			damage = 25;
 			bullet_cout = 1;
-			PrefferedTime = 0.5f;
+			PrefferedTime = 0.3f;
 			int k = r.nextInt(3);
 			if (k == 0)
 				damage += 25;
+			else
 			if (k == 1)
 				bullet_cout++;
+			else
 			if (k == 2)
 				PrefferedTime -= 0.1f;
+			
 			if (PrefferedTime == 0.2f)
 				PrefferedTime = 0.3f;
 			perks--;

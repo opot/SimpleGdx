@@ -30,7 +30,7 @@ public class EnemySpawner {
 			if(scheme == 2) createRow(w,h,r);
 			nextSpawn +=r.nextInt(6);
 		}
-		level = (int)(game.Score/20);
+		level = (int)(game.Score/50);
 	}
 
 	private void createLine(float w, float h, Random r) {

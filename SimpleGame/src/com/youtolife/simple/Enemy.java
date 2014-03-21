@@ -20,7 +20,6 @@ public class Enemy {
 		Creator(texture,x,y);
 		this.speedX = speedX;
 		this.speedY = speedY;
-		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}
 	
 	public Enemy(Texture texture,float x,float y,float width, float height,float speedX, float speedY) {
@@ -28,7 +27,6 @@ public class Enemy {
 		sprite.setSize(width, height);
 		this.speedX = speedX;
 		this.speedY = speedY;
-		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}
 	
 	public Enemy(Texture texture,float x,float y){
@@ -46,7 +44,6 @@ public class Enemy {
 		speedY = new Random().nextFloat()/2+0.2f;
 		speedX = new Random().nextFloat()/2;
 		
-		sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 	}
 
 	public boolean update(Player player){
@@ -54,13 +51,11 @@ public class Enemy {
 		sprite.setX(sprite.getX()-speedX*Gdx.graphics.getDeltaTime());
 		if (sprite.getX() < -0.5f){
 			speedX*=-1;
-			sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 			sprite.setX(-0.499f);
 		}
 		if (sprite.getX() > 0.40f){
 			speedX*=-1;
 			sprite.setX(0.399f);
-			sprite.setRotation(-(float) Math.toDegrees(Math.atan(speedX/speedY)));
 		}
 		
 		if(player.sprite.getBoundingRectangle().overlaps(sprite.getBoundingRectangle()))
