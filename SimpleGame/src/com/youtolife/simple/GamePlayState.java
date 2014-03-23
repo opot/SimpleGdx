@@ -49,25 +49,27 @@ public class GamePlayState extends GameState {
 	@Override
 	public void update(MySimpleGame game) {
 
+		Input input = Gdx.input;
+		
 		spawner.update(this, w, h);
 		back.update();
 		Score += Gdx.graphics.getDeltaTime();
 
-		Input input = Gdx.input;
+		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched()){
+			spawner.update(this, w, h);
+			back.sprite.setY(back.sprite.getY() - Gdx.graphics.getDeltaTime());
+		}
+		
 		if (input.isKeyPressed(Input.Keys.ESCAPE)
 				|| input.isKeyPressed(Input.Keys.BACK))
 			game.enterState(MySimpleGame.MAINMENUSTATE);
 
-		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched()) {
-			for (Enemy enemy : enemies)
-				enemy.sprite.setY(enemy.sprite.getY()
-						- Gdx.graphics.getDeltaTime());
-			back.sprite.setY(back.sprite.getY() - Gdx.graphics.getDeltaTime());
-		}
-
 		Iterator<Bonus> bonIt = bonuses.iterator();
 		while (bonIt.hasNext()) {
 			Bonus b = bonIt.next();
+			if (input.isKeyPressed(Input.Keys.UP) || input.isTouched())
+				b.sprite.setY(b.sprite.getY()
+						- Gdx.graphics.getDeltaTime());
 			if (b.update(player, h, w)) {
 				player.upgrade();
 				back.delta_rgp+=Math.PI/6;
@@ -80,6 +82,9 @@ public class GamePlayState extends GameState {
 		Iterator<Enemy> enemIt = enemies.iterator();
 		while (enemIt.hasNext()) {
 			Enemy enemy = enemIt.next();
+			if (input.isKeyPressed(Input.Keys.UP) || input.isTouched())
+					enemy.sprite.setY(enemy.sprite.getY()
+							- Gdx.graphics.getDeltaTime());
 			if (enemy.update(player))
 				game.enterState(MySimpleGame.MAINMENUSTATE);
 			if (enemy.sprite.getY() < -h / w || enemy.hp <= 0) {

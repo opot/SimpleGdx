@@ -28,7 +28,7 @@ public class EnemySpawner {
 			if(scheme == 0) createV(w,h,r);
 			if(scheme == 1) createLine(w,h,r);
 			if(scheme == 2) createRow(w,h,r);
-			nextSpawn +=r.nextInt(6);
+			nextSpawn +=r.nextInt(6)+0.5f;
 		}
 		level = (int)(game.Score/50);
 	}
