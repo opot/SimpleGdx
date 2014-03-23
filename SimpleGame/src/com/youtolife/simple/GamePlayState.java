@@ -70,6 +70,7 @@ public class GamePlayState extends GameState {
 			Bonus b = bonIt.next();
 			if (b.update(player, h, w)) {
 				player.upgrade();
+				back.delta_rgp+=Math.PI/6;
 				b.dispose();
 				bonIt.remove();
 			}
@@ -162,7 +163,8 @@ public class GamePlayState extends GameState {
 		player = new Player(h / w);
 		bullets = new Vector<Bullet>();
 		Score = 0;
-
+		back.delta_rgp = 0;
+		back.rgb = 0;
 	}
 
 	@Override
