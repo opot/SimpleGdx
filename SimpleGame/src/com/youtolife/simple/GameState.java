@@ -1,6 +1,7 @@
 package com.youtolife.simple;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.youtolife.simple.MySimpleGame;
 
 public abstract class GameState {
 

@@ -37,10 +37,10 @@ public class Back {
 				rgb -= Math.PI * 2;
 		}
 
-		float con = 3f / 4f;
-		float r = 0.1f + (float) Math.sin(rgb) * con;
-		float g = 0.1f + (float) -Math.atan(Math.sin(rgb));
-		float b = 0.1f + (float) Math.cos(rgb / 4);
+		float con = 2f / 4f;
+		float r = (float) Math.sin(rgb) * con;
+		float g = (float) -Math.atan(Math.sin(rgb))*con;
+		float b = (float) Math.cos(rgb / 4)*con;
 		sprite.setColor(new Color(r, g, b, 1f));
 	}
 

@@ -26,7 +26,9 @@ public class Player {
 	float height = 0.04f;
 	float width = 0.02f;
 
-	public void upgrade() {
+	public void upgrade(GamePlayState game) {
+		int level = (int) (game.Score / 50);
+		level *=level;
 		level_points++;
 		int perks = level_points;
 		damage = 25;
@@ -36,18 +38,16 @@ public class Player {
 			int k = r.nextInt(3);
 			if (k == 0)
 				damage += 25;
-			else
-			if (k == 1)
+			else if (k == 1)
 				bullet_cout++;
-			else
-			if (k == 2)
-				PrefferedTime *= 0.8f;
-			
+			else if (k == 2)
+				PrefferedTime *= 0.8f-level*0.01f;
+
 			perks--;
 		}
-		height = damage / 25 *0.02f + 0.02f;
-		width = damage / 25 * 0.01f+ 0.01f;
-		color = new Color(r.nextFloat(),r.nextFloat(), r.nextFloat(), 1f);
+		height = (damage / 25 + level) * 0.02f + 0.02f;
+		width = (damage / 25 * +level) * 0.01f + 0.01f;
+		color = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
 	}
 
 	public Player(float AspektRatio) {
@@ -83,7 +83,7 @@ public class Player {
 			ShotTime += PrefferedTime;
 			if (bullet_cout == 1) {
 				game.bullets.add(new Bullet(0, sprite.getX()
-						+ sprite.getWidth() / 2 - width/2, sprite.getY()
+						+ sprite.getWidth() / 2 - width / 2, sprite.getY()
 						+ sprite.getHeight(), width, height));
 				game.bullets.get(game.bullets.size() - 1).sprite
 						.setColor(color);
@@ -91,7 +91,7 @@ public class Player {
 				float minAngle = -bullet_cout * 2.5f;
 				for (int i = 0; i < bullet_cout; i++) {
 					game.bullets.add(new Bullet(minAngle + i * 5, sprite.getX()
-							+ sprite.getWidth() / 2 - width/2, sprite.getY()
+							+ sprite.getWidth() / 2 - width / 2, sprite.getY()
 							+ sprite.getHeight(), width, height));
 					game.bullets.get(game.bullets.size() - 1).sprite
 							.setColor(color);

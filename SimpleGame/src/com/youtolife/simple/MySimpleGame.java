@@ -21,6 +21,8 @@ public class MySimpleGame implements ApplicationListener {
 	float w;
 	float h;
 
+	private float lastAngle = 0;
+	
 	@Override
 	public void create() {
 		w = Gdx.graphics.getWidth();
@@ -65,6 +67,15 @@ public class MySimpleGame implements ApplicationListener {
 		for (GameState state : states)
 			if (state.getID() == CurrentState)
 				state.update(this);
+		
+		int angle = (int) (Gdx.input.getAccelerometerX()*9);
+		if (Math.abs(angle)<15) {
+			camera.rotate(lastAngle);
+			camera.rotate(-angle);
+			camera.zoom = (float)(0.5f/(Math.abs(angle/9f)+1f));
+			lastAngle = angle;
+		//	camera.update();
+		}
 	}
 
 	public void enterState(int StateId) {

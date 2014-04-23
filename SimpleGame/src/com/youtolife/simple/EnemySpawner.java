@@ -30,7 +30,7 @@ public class EnemySpawner {
 			if(scheme == 2) createRow(w,h,r);
 			nextSpawn +=r.nextInt(6)+0.5f;
 		}
-		level = (int)(game.Score/50);
+		level = (int)(game.Score/20);
 	}
 
 	private void createLine(float w, float h, Random r) {
@@ -38,7 +38,7 @@ public class EnemySpawner {
 		float width = n*0.05f;
 		float height = width*Enemy.ratio;
 		float delt = r.nextInt(4)*0.02f*(r.nextInt(2)*2-1);
-		for(int i = 0; i<=(int)(1f/width/2);i++){
+		for(int i = 0; i<(int)(1f/width/2);i++){
 			enemies.add(new Enemy(texture,i*2*width-0.5f,h/w+delt*i,width,height,0,1/width*0.05f));
 			enemies.get(enemies.size()-1).hp = (n+level)*25;
 		}

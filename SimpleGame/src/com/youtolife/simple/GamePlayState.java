@@ -2,13 +2,16 @@ package com.youtolife.simple;
 
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GamePlayState extends GameState {
 
@@ -50,29 +53,30 @@ public class GamePlayState extends GameState {
 	public void update(MySimpleGame game) {
 
 		Input input = Gdx.input;
-		
+
 		spawner.update(this, w, h);
 		back.update();
 		Score += Gdx.graphics.getDeltaTime();
 
-		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched()){
+		if (input.isKeyPressed(Input.Keys.UP) || input.isTouched()) {
 			spawner.update(this, w, h);
 			back.sprite.setY(back.sprite.getY() - Gdx.graphics.getDeltaTime());
 		}
-		
+
 		if (input.isKeyPressed(Input.Keys.ESCAPE)
-				|| input.isKeyPressed(Input.Keys.BACK))
+				|| input.isKeyPressed(Input.Keys.BACK)) {
+			Save();
 			game.enterState(MySimpleGame.MAINMENUSTATE);
+		}
 
 		Iterator<Bonus> bonIt = bonuses.iterator();
 		while (bonIt.hasNext()) {
 			Bonus b = bonIt.next();
 			if (input.isKeyPressed(Input.Keys.UP) || input.isTouched())
-				b.sprite.setY(b.sprite.getY()
-						- Gdx.graphics.getDeltaTime());
+				b.sprite.setY(b.sprite.getY() - Gdx.graphics.getDeltaTime());
 			if (b.update(player, h, w)) {
-				player.upgrade();
-				back.delta_rgp+=Math.PI/6;
+				player.upgrade(this);
+				back.delta_rgp += Math.PI / 6;
 				b.dispose();
 				bonIt.remove();
 			}
@@ -83,10 +87,12 @@ public class GamePlayState extends GameState {
 		while (enemIt.hasNext()) {
 			Enemy enemy = enemIt.next();
 			if (input.isKeyPressed(Input.Keys.UP) || input.isTouched())
-					enemy.sprite.setY(enemy.sprite.getY()
-							- Gdx.graphics.getDeltaTime());
-			if (enemy.update(player))
+				enemy.sprite.setY(enemy.sprite.getY()
+						- Gdx.graphics.getDeltaTime());
+			if (enemy.update(player)) {
+				Save();
 				game.enterState(MySimpleGame.MAINMENUSTATE);
+			}
 			if (enemy.sprite.getY() < -h / w || enemy.hp <= 0) {
 				if (enemy.hp <= 0) {
 					Score++;
@@ -180,4 +186,24 @@ public class GamePlayState extends GameState {
 	public void resume() {
 	}
 
+	private void Save() {
+		
+			int last_high;
+			
+			try {
+				FileHandle file = Gdx.files.local("data/saves/score.dat");
+				Scanner scan = new Scanner(file.read());
+				last_high = scan.nextInt();
+				scan.close();
+			} catch (GdxRuntimeException e) {
+				last_high = 0;
+				e.printStackTrace();
+			}
+		
+			last_high = (int) (last_high>Score?last_high:Score);
+			FileHandle file = Gdx.files.local("data/saves/score.dat");
+			
+			file.writeString(String.valueOf((int) last_high)+"\n", false);
+			file.writeString(String.valueOf((int) Score), true);
+	}
 }
